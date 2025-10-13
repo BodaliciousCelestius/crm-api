@@ -1,9 +1,9 @@
 spring:
   data:
     mongodb:
-      uri: ${MONGODB_DATABASE_URL:mongodb://localhost:27017/crm-api}
-      uuid-representation: standard
+      uri: ${MONGODB_DATABASE_URL:mongodb://localhost:27018/crm-api}
       auto-index-creation: true
+      uuid-representation: standard
   docker:
     compose:
       lifecycle-management: start-only
@@ -15,4 +15,6 @@ error:
     log-levels:
       5xx: ERROR
 springdoc:
-  pathsToMatch: /, /api/**
+  swagger-ui:
+    path: /swagger-ui
+  pathsToMatch: /api/**

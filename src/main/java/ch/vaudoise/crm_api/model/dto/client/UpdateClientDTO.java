@@ -5,4 +5,9 @@ import jakarta.validation.constraints.Email;
 import lombok.Builder;
 
 @Builder
-public record UpdateClientDTO(ClientType type, String name, String phone, @Email String email) {}
+public record UpdateClientDTO(
+        ClientType type,
+        String name,
+        String phone,
+        @Email String email
+) {}

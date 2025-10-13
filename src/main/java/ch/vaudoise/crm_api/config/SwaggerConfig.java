@@ -13,6 +13,8 @@ import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @Configuration
 public class SwaggerConfig {
 
@@ -44,16 +46,14 @@ public class SwaggerConfig {
                     .content(
                             new Content()
                                     .addMediaType(
-                                            "application/json",
+                                            APPLICATION_JSON_VALUE,
                                             new MediaType().schema(errorSchemaRef)
                                     )
                     );
 
             operation.getResponses()
-                    .addApiResponse("400", errorResponse)
-                    .addApiResponse("404", errorResponse)
-                    .addApiResponse("500", errorResponse);
-
+                    .addApiResponse("4xx", errorResponse)
+                    .addApiResponse("5xx", errorResponse);
             return operation;
         };
     }
