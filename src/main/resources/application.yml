@@ -14,9 +14,5 @@ error:
     full-stacktrace-http-statuses: 5xx
     log-levels:
       5xx: ERROR
-    codes:
-      ClientTypeUnique: CLIENT_TYPE_UNIQUE
-      ClientNameUnique: CLIENT_NAME_UNIQUE
-      ClientEmailUnique: CLIENT_EMAIL_UNIQUE
 springdoc:
   pathsToMatch: /, /api/**

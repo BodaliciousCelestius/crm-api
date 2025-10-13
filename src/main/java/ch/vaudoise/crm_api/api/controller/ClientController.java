@@ -1,4 +1,4 @@
-package ch.vaudoise.crm_api.api;
+package ch.vaudoise.crm_api.api.controller;
 
 import ch.vaudoise.crm_api.model.dto.client.CreateClientDTO;
 import ch.vaudoise.crm_api.model.dto.client.ResponseClientDTO;
