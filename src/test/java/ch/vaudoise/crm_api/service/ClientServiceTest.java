@@ -17,23 +17,26 @@ import org.bson.types.Decimal128;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ClientServiceTest {
 
-  @Autowired private ClientService clientService;
+  @InjectMocks
+  private ClientService clientService;
 
-  @MockitoBean private ClientRepository clientRepository;
+  @Mock
+  private ClientRepository clientRepository;
 
-  @MockitoBean private ContractRepository contractRepository;
+  @Mock private ContractRepository contractRepository;
 
   @Nested
   class FindById {
@@ -339,7 +342,6 @@ class ClientServiceTest {
     void shouldThrowWhenNotFound() {
       Client mockClient = aClient();
       Mockito.when(clientRepository.findById(mockClient.getId())).thenReturn(Mono.empty());
-      Mockito.when(clientRepository.delete(mockClient)).thenReturn(Mono.empty());
       Mockito.when(contractRepository.unsetClientIdByClientId(mockClient.getId()))
           .thenReturn(Mono.empty());
       Mockito.when(contractRepository.setEndDateByClientId(eq(mockClient.getId()), any()))

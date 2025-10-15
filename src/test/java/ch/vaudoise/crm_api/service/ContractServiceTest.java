@@ -16,20 +16,23 @@ import java.time.LocalDate;
 import org.bson.types.Decimal128;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ContractServiceTest {
 
-  @Autowired private ContractService contractService;
+    @InjectMocks
+  private ContractService contractService;
 
-  @MockitoBean private ContractRepository contractRepository;
+  @Mock
+  private ContractRepository contractRepository;
 
-  @MockitoBean private ClientRepository clientRepository;
+  @Mock private ClientRepository clientRepository;
 
   @Nested
   class Create {
