@@ -4,10 +4,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import ch.vaudoise.crm_api.model.ClientType;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import lombok.Builder;
 
@@ -17,7 +14,12 @@ public record ResponseClientDTO(
     String id,
     @NotNull ClientType type,
     @NotBlank String name,
-    @NotBlank String phone,
+    @NotBlank
+        @Pattern(
+            regexp = "^\\+?\\d{7,15}$",
+            message =
+                "Phone number must be numeric and between 7 and 15 digits, optionally starting with '+'")
+        String phone,
     @NotBlank @Email String email,
     @Past LocalDate birthday,
     String companyIdentifier) {}

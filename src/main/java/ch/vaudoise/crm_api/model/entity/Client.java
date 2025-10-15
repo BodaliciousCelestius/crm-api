@@ -3,10 +3,7 @@ package ch.vaudoise.crm_api.model.entity;
 import ch.vaudoise.crm_api.model.ClientType;
 import ch.vaudoise.crm_api.model.dto.client.ResponseClientDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import lombok.*;
 import org.bson.types.ObjectId;
@@ -32,25 +29,33 @@ public class Client {
   @Indexed(unique = true)
   private String name;
 
-  @NotBlank private String phone;
+  @NotBlank
+  @Pattern(
+      regexp = "^\\+?\\d{7,15}$",
+      message =
+          "Phone number must be numeric and between 7 and 15 digits, optionally starting with '+'")
+  private String phone;
 
   @Email @NotBlank private String email;
 
-  @Past private LocalDate birthday;
+  @Past(message = "Birthday must be in the past")
+  private LocalDate birthday;
 
   private String companyIdentifier;
 
   @Version private Integer version;
 
   public ResponseClientDTO toDTO() {
-    return ResponseClientDTO.builder()
-        .id(id.toString())
-        .type(type)
-        .name(name)
-        .phone(phone)
-        .email(email)
-        .birthday(birthday)
-        .companyIdentifier(companyIdentifier)
-        .build();
+    ResponseClientDTO.ResponseClientDTOBuilder dtoBuilder = ResponseClientDTO.builder();
+
+    if (id != null) dtoBuilder.id(id.toString());
+    if (type != null) dtoBuilder.type(type);
+    if (name != null) dtoBuilder.name(name);
+    if (phone != null) dtoBuilder.phone(phone);
+    if (email != null) dtoBuilder.email(email);
+    if (birthday != null) dtoBuilder.birthday(birthday);
+    if (companyIdentifier != null) dtoBuilder.companyIdentifier(companyIdentifier);
+
+    return dtoBuilder.build();
   }
 }

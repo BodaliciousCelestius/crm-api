@@ -1,10 +1,10 @@
 package ch.vaudoise.crm_api.model.dto.contract;
 
 import jakarta.validation.constraints.PositiveOrZero;
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import lombok.Builder;
+import org.bson.types.Decimal128;
 
-@Builder
+@Builder(toBuilder = true)
 public record UpdateContractDTO(
-    OffsetDateTime startDate, OffsetDateTime endDate, @PositiveOrZero BigDecimal cost) {}
+    LocalDate startDate, LocalDate endDate, @PositiveOrZero Decimal128 cost) {}

@@ -1,13 +1,11 @@
-package ch.vaudoise.crm_api.config.mongo;
+package ch.vaudoise.crm_api.config;
 
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
-import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.core.mapping.event.ValidatingEntityCallback;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -25,11 +23,5 @@ public class MongoConfig {
   public ValidatingEntityCallback validatingEntityCallback(
       final LocalValidatorFactoryBean factory) {
     return new ValidatingEntityCallback(factory);
-  }
-
-  @Bean
-  public MongoCustomConversions mongoCustomConversions() {
-    return new MongoCustomConversions(
-        Arrays.asList(new MongoOffsetDateTimeWriter(), new MongoOffsetDateTimeReader()));
   }
 }

@@ -5,15 +5,15 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import lombok.Builder;
+import org.bson.types.Decimal128;
 
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ResponseContractDTO(
     String id,
-    @NotNull OffsetDateTime startDate,
-    OffsetDateTime endDate,
-    @NotNull @PositiveOrZero BigDecimal cost,
+    @NotNull LocalDate startDate,
+    LocalDate endDate,
+    @NotNull @PositiveOrZero Decimal128 cost,
     @NotNull @Valid ResponseClientDTO client) {}

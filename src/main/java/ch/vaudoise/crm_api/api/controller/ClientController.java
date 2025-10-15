@@ -3,9 +3,12 @@ package ch.vaudoise.crm_api.api.controller;
 import ch.vaudoise.crm_api.model.dto.client.CreateClientDTO;
 import ch.vaudoise.crm_api.model.dto.client.ResponseClientDTO;
 import ch.vaudoise.crm_api.model.dto.client.UpdateClientDTO;
+import ch.vaudoise.crm_api.model.dto.contract.ResponseContractDTO;
 import ch.vaudoise.crm_api.service.ClientService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
+import org.bson.types.Decimal128;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -24,20 +27,28 @@ public class ClientController {
     this.clientService = clientService;
   }
 
-  @GetMapping
-  public Flux<ResponseClientDTO> getAllClients() {
-    return clientService.findAll();
-  }
-
   @GetMapping("/{id}")
   public Mono<ResponseClientDTO> getClient(@PathVariable final String id) {
-    return clientService.find(id);
+    return clientService.findById(id);
+  }
+
+  @GetMapping("/{id}/contracts")
+  public Flux<ResponseContractDTO> getAllContracts(
+      @PathVariable final String id,
+      @RequestParam(required = false) @Valid LocalDate from,
+      @RequestParam(required = false) @Valid LocalDate to) {
+    return clientService.getAllActiveContracts(id, from, to);
+  }
+
+  @GetMapping("/{id}/contracts/total")
+  public Mono<Decimal128> getAllContractsTotalSum(@PathVariable final String id) {
+    return clientService.getAllActiveContractsTotalSum(id);
   }
 
   @PostMapping
   @ApiResponse(responseCode = "201")
   @ResponseStatus(HttpStatus.CREATED)
-  public Mono<Void> createClient(@RequestBody @Valid final CreateClientDTO client) {
+  public Mono<String> createClient(@RequestBody @Valid final CreateClientDTO client) {
     return clientService.create(client);
   }
 

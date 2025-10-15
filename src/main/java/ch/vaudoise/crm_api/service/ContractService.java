@@ -1,17 +1,15 @@
 package ch.vaudoise.crm_api.service;
 
 import ch.vaudoise.crm_api.model.dto.contract.CreateContractDTO;
-import ch.vaudoise.crm_api.model.dto.contract.ResponseContractDTO;
 import ch.vaudoise.crm_api.model.dto.contract.UpdateContractDTO;
 import ch.vaudoise.crm_api.model.entity.Contract;
 import ch.vaudoise.crm_api.model.exception.NotFoundException;
 import ch.vaudoise.crm_api.repository.ClientRepository;
 import ch.vaudoise.crm_api.repository.ContractRepository;
 import java.time.Instant;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -26,18 +24,7 @@ public class ContractService {
     this.contractRepository = contractRepository;
   }
 
-  public Flux<ResponseContractDTO> findAll() {
-    return contractRepository.findAll().map(Contract::toDTO);
-  }
-
-  public Mono<ResponseContractDTO> find(final String id) {
-    return contractRepository
-        .findById(new ObjectId(id))
-        .switchIfEmpty(Mono.error(new NotFoundException("Contract not found: " + id)))
-        .map(Contract::toDTO);
-  }
-
-  public Mono<Void> create(final String clientId, final CreateContractDTO dto) {
+  public Mono<String> create(final String clientId, final CreateContractDTO dto) {
     return clientRepository
         .findById(new ObjectId(clientId))
         .switchIfEmpty(Mono.error(new NotFoundException("Client not found: " + clientId)))
@@ -45,15 +32,15 @@ public class ContractService {
             client -> {
               Contract contract =
                   Contract.builder()
-                      .startDate(dto.startDate() == null ? OffsetDateTime.now() : dto.startDate())
+                      .startDate(dto.startDate() == null ? LocalDate.now() : dto.startDate())
                       .endDate(dto.endDate())
                       .cost(dto.cost())
-                      .client(client)
+                      .clientId(new ObjectId(clientId))
                       .updatedAt(Instant.now())
                       .build();
               return contractRepository.save(contract);
             })
-        .then();
+        .map(contract -> contract.getId().toString());
   }
 
   public Mono<Void> update(final String id, final UpdateContractDTO dto) {
@@ -66,6 +53,7 @@ public class ContractService {
               if (dto.startDate() != null) updateContract.startDate(dto.startDate());
               if (dto.endDate() != null) updateContract.endDate(dto.endDate());
               if (dto.cost() != null) updateContract.cost(dto.cost());
+              updateContract.updatedAt(Instant.now());
               return contractRepository.save(updateContract.build());
             })
         .then();
