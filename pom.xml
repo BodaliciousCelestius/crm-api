@@ -27,6 +27,7 @@
         <flapdoodle-embed-mongo.version>4.21.0</flapdoodle-embed-mongo.version>
         <commons-lang3.version>3.19.0</commons-lang3.version>
         <logback.version>1.5.19</logback.version>
+        <jacoco.version>0.8.12</jacoco.version>
 
         <!-- Plugins -->
         <spotless-maven-plugin.version>2.46.1</spotless-maven-plugin.version>
@@ -154,14 +155,33 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>@{argLine}</argLine>
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
