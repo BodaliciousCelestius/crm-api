@@ -39,7 +39,7 @@ jobs:
         run: mvn spotbugs:check pmd:check checkstyle:check || true
 
       - name: Upload JaCoCo coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: target/site/jacoco
