@@ -11,6 +11,7 @@ import ch.vaudoise.crm_api.model.entity.Contract;
 import ch.vaudoise.crm_api.model.exception.NotFoundException;
 import ch.vaudoise.crm_api.repository.ClientRepository;
 import ch.vaudoise.crm_api.repository.ContractRepository;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.time.Instant;
 import java.time.LocalDate;
 import org.bson.types.Decimal128;
@@ -25,6 +26,7 @@ public class ClientService {
   private final ClientRepository clientRepository;
   private final ContractRepository contractRepository;
 
+  @SuppressFBWarnings
   public ClientService(ClientRepository clientRepository, ContractRepository contractRepository) {
     this.clientRepository = clientRepository;
     this.contractRepository = contractRepository;

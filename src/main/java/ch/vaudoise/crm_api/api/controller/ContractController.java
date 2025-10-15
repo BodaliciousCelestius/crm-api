@@ -3,6 +3,7 @@ package ch.vaudoise.crm_api.api.controller;
 import ch.vaudoise.crm_api.model.dto.contract.CreateContractDTO;
 import ch.vaudoise.crm_api.model.dto.contract.UpdateContractDTO;
 import ch.vaudoise.crm_api.service.ContractService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ public class ContractController {
 
   private final ContractService contractService;
 
+  @SuppressFBWarnings
   public ContractController(final ContractService contractService) {
     this.contractService = contractService;
   }

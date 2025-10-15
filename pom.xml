@@ -35,6 +35,7 @@
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven-dependency-plugin.version>3.9.0</maven-dependency-plugin.version>
         <maven-spotbugs-plugin.version>4.9.7.0</maven-spotbugs-plugin.version>
+        <maven-spotbugs-annotations-plugin.version>4.9.6</maven-spotbugs-annotations-plugin.version>
         <maven-pmd-plugin.version>3.27.0</maven-pmd-plugin.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     </properties>
@@ -76,6 +77,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-docker-compose</artifactId>
             <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>${maven-spotbugs-annotations-plugin.version}</version>
             <optional>true</optional>
         </dependency>
 

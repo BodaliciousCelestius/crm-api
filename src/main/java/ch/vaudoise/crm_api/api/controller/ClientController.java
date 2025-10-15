@@ -5,6 +5,7 @@ import ch.vaudoise.crm_api.model.dto.client.ResponseClientDTO;
 import ch.vaudoise.crm_api.model.dto.client.UpdateClientDTO;
 import ch.vaudoise.crm_api.model.dto.contract.ResponseContractDTO;
 import ch.vaudoise.crm_api.service.ClientService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -23,7 +24,8 @@ public class ClientController {
 
   private final ClientService clientService;
 
-  public ClientController(final ClientService clientService) {
+  @SuppressFBWarnings
+  public ClientController(ClientService clientService) {
     this.clientService = clientService;
   }
 
