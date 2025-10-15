@@ -17,14 +17,15 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@SuppressFBWarnings(
+    value = {"EI_EXPOSE_REP2"},
+    justification = "Ignore warning on Spring Boot Dependency Injection EI_EXPOSE_REP2")
 @RestController
 @Validated
 @RequestMapping(value = "/api/clients", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ClientController {
 
   private final ClientService clientService;
-
-  @SuppressFBWarnings(justification = "Ignore warning on Spring Boot Dependency Injection EI_EXPOSE_REP2")
 
   public ClientController(ClientService clientService) {
     this.clientService = clientService;

@@ -13,13 +13,14 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+@SuppressFBWarnings(
+    value = {"EI_EXPOSE_REP2"},
+    justification = "Ignore warning on Spring Boot Dependency Injection EI_EXPOSE_REP2")
 @Service
 public class ContractService {
 
   private final ClientRepository clientRepository;
   private final ContractRepository contractRepository;
-
-  @SuppressFBWarnings(justification = "Ignore warning on Spring Boot Dependency Injection EI_EXPOSE_REP2")
 
   public ContractService(
       final ClientRepository clientRepository, final ContractRepository contractRepository) {

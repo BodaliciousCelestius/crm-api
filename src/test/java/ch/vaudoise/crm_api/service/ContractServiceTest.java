@@ -111,6 +111,22 @@ class ContractServiceTest {
       verify(contractRepository).save(any(Contract.class));
     }
 
+      @Test
+      void shouldUpdateExistingContractWithNullFields() {
+          Contract mockContract = aContract();
+          UpdateContractDTO dto =
+                  new UpdateContractDTO(null, null, new Decimal128(1));
+
+          when(contractRepository.findById(mockContract.getId())).thenReturn(Mono.just(mockContract));
+          when(contractRepository.save(any(Contract.class))).thenReturn(Mono.just(mockContract));
+
+          StepVerifier.create(contractService.update(mockContract.getId().toHexString(), dto))
+                  .verifyComplete();
+
+          verify(contractRepository).findById(mockContract.getId());
+          verify(contractRepository).save(any(Contract.class));
+      }
+
     @Test
     void shouldErrorWhenNotFound() {
       Contract mockContract = aContract();

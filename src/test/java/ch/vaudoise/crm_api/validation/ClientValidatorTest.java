@@ -1,85 +1,78 @@
 package ch.vaudoise.crm_api.validation;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import ch.vaudoise.crm_api.model.ClientType;
-import jakarta.validation.ConstraintValidatorContext;
-import jakarta.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 class ClientValidatorTest {
 
-    private ClientValidator validator;
-    private ConstraintValidatorContext context;
+  private static Validator validator;
 
-    @BeforeEach
-    void setUp() {
-        validator = new ClientValidator();
-        context = mock(ConstraintValidatorContext.class);
-        ConstraintViolationBuilder violationBuilder = mock(ConstraintViolationBuilder.class);
+  @ValidClient
+  public record TestClient(@NotNull ClientType type, String companyIdentifier, LocalDate birthday)
+      implements ClientValidatable {}
 
-        when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(violationBuilder);
-        when(violationBuilder.addPropertyNode(anyString())).thenReturn(mock(ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext.class));
-    }
+  @BeforeAll
+  static void setupValidator() {
+    validator = Validation.buildDefaultValidatorFactory().getValidator();
+  }
 
-    record TestClient(ClientType type, String companyIdentifier, LocalDate birthday) implements ClientValidatable {}
+  @Test
+  void companyWithoutIdentifier_shouldFail() {
+    var client = new TestClient(ClientType.COMPANY, null, null);
+    var violations = validator.validate(client);
+    assertFalse(violations.isEmpty());
+    assertTrue(
+        violations.stream()
+            .anyMatch(v -> v.getMessage().contains("Company must have a companyIdentifier")));
+  }
 
-    @Test
-    void testCompanyWithoutIdentifier_shouldBeInvalid() {
-        var client = new TestClient(ClientType.COMPANY, null, null);
-        boolean result = validator.isValid(client, context);
-        assertFalse(result);
-        verify(context).buildConstraintViolationWithTemplate("Company must have a companyIdentifier");
-    }
+  @Test
+  void companyWithBirthday_shouldFail() {
+    var client = new TestClient(ClientType.COMPANY, "CHE-123", LocalDate.parse("1990-01-01"));
+    var violations = validator.validate(client);
+    assertFalse(violations.isEmpty());
+    assertTrue(
+        violations.stream()
+            .anyMatch(v -> v.getMessage().contains("Company must not have a birthday")));
+  }
 
-    @Test
-    void testCompanyWithBirthday_shouldBeInvalid() {
-        var client = new TestClient(ClientType.COMPANY, "CHE-123", LocalDate.parse("1990-01-01"));
-        boolean result = validator.isValid(client, context);
-        assertFalse(result);
-        verify(context).buildConstraintViolationWithTemplate("Company must not have a birthday");
-    }
+  @Test
+  void validCompany_shouldPass() {
+    var client = new TestClient(ClientType.COMPANY, "CHE-123", null);
+    var violations = validator.validate(client);
+    assertTrue(violations.isEmpty());
+  }
 
-    @Test
-    void testValidCompany_shouldBeValid() {
-        var client = new TestClient(ClientType.COMPANY, "CHE-123", null);
-        boolean result = validator.isValid(client, context);
-        assertTrue(result);
-        verify(context, never()).buildConstraintViolationWithTemplate(anyString());
-    }
+  @Test
+  void personWithoutBirthday_shouldFail() {
+    var client = new TestClient(ClientType.PERSON, null, null);
+    var violations = validator.validate(client);
+    assertFalse(violations.isEmpty());
+    assertTrue(
+        violations.stream().anyMatch(v -> v.getMessage().contains("Person must have a birthday")));
+  }
 
-    @Test
-    void testPersonWithoutBirthday_shouldBeInvalid() {
-        var client = new TestClient(ClientType.PERSON, null, null);
-        boolean result = validator.isValid(client, context);
-        assertFalse(result);
-        verify(context).buildConstraintViolationWithTemplate("Person must have a birthday");
-    }
+  @Test
+  void personWithCompanyIdentifier_shouldFail() {
+    var client = new TestClient(ClientType.PERSON, "CHE-123", LocalDate.parse("1990-01-01"));
+    var violations = validator.validate(client);
+    assertFalse(violations.isEmpty());
+    assertTrue(
+        violations.stream()
+            .anyMatch(v -> v.getMessage().contains("Person must not have a companyIdentifier")));
+  }
 
-    @Test
-    void testPersonWithCompanyIdentifier_shouldBeInvalid() {
-        var client = new TestClient(ClientType.PERSON, "CHE-123", LocalDate.parse("1990-01-01"));
-        boolean result = validator.isValid(client, context);
-        assertFalse(result);
-        verify(context).buildConstraintViolationWithTemplate("Person must not have a companyIdentifier");
-    }
-
-    @Test
-    void testValidPerson_shouldBeValid() {
-        var client = new TestClient(ClientType.PERSON, null, LocalDate.parse("1990-01-01"));
-        boolean result = validator.isValid(client, context);
-        assertTrue(result);
-        verify(context, never()).buildConstraintViolationWithTemplate(anyString());
-    }
-
-    @Test
-    void testNullClient_shouldBeValid() {
-        boolean result = validator.isValid(null, context);
-        assertTrue(result);
-        verifyNoInteractions(context);
-    }
+  @Test
+  void validPerson_shouldPass() {
+    var client = new TestClient(ClientType.PERSON, null, LocalDate.parse("1990-01-01"));
+    var violations = validator.validate(client);
+    assertTrue(violations.isEmpty());
+  }
 }

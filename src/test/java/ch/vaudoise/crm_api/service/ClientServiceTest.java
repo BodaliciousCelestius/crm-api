@@ -279,6 +279,25 @@ class ClientServiceTest {
     }
 
     @Test
+    void shouldUpdateClientWithNullFieldsInDTO() {
+      Client mockClient = aClient();
+      UpdateClientDTO dto = UpdateClientDTO.builder().name(mockClient.getName()).build();
+
+      Mockito.when(clientRepository.findById(mockClient.getId())).thenReturn(Mono.just(mockClient));
+      Mockito.when(clientRepository.save(any(Client.class))).thenReturn(Mono.just(mockClient));
+
+      StepVerifier.create(clientService.update(mockClient.getId().toString(), dto))
+          .verifyComplete();
+
+      ArgumentCaptor<Client> captor = ArgumentCaptor.forClass(Client.class);
+      Mockito.verify(clientRepository).save(captor.capture());
+      assertThat(captor.getValue())
+          .usingRecursiveComparison()
+          .ignoringActualNullFields()
+          .isEqualTo(mockClient);
+    }
+
+    @Test
     void shouldThrowWhenNotFound() {
       Client mockClient = aClient();
       Mockito.when(clientRepository.findById(mockClient.getId())).thenReturn(Mono.empty());
