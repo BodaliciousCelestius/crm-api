@@ -20,7 +20,7 @@ public class ContractController {
 
   private final ContractService contractService;
 
-  @SuppressFBWarnings
+  @SuppressFBWarnings(justification = "Ignore warning on Spring Boot Dependency Injection EI_EXPOSE_REP2")
   public ContractController(final ContractService contractService) {
     this.contractService = contractService;
   }

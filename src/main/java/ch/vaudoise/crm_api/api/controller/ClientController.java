@@ -24,7 +24,8 @@ public class ClientController {
 
   private final ClientService clientService;
 
-  @SuppressFBWarnings
+  @SuppressFBWarnings(justification = "Ignore warning on Spring Boot Dependency Injection EI_EXPOSE_REP2")
+
   public ClientController(ClientService clientService) {
     this.clientService = clientService;
   }

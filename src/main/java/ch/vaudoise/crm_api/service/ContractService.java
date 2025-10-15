@@ -19,7 +19,8 @@ public class ContractService {
   private final ClientRepository clientRepository;
   private final ContractRepository contractRepository;
 
-  @SuppressFBWarnings
+  @SuppressFBWarnings(justification = "Ignore warning on Spring Boot Dependency Injection EI_EXPOSE_REP2")
+
   public ContractService(
       final ClientRepository clientRepository, final ContractRepository contractRepository) {
     this.clientRepository = clientRepository;
