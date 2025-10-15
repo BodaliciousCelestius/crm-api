@@ -1,8 +1,7 @@
 spring:
   data:
     mongodb:
-      auto-index-creation: true
-      uuid-representation: standard
+      uri: mongodb://localhost:27018/crm-api
   docker:
     compose:
       lifecycle-management: start-only

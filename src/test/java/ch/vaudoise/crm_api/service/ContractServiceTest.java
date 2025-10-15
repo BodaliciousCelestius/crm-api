@@ -26,11 +26,9 @@ import reactor.test.StepVerifier;
 @ExtendWith(MockitoExtension.class)
 class ContractServiceTest {
 
-    @InjectMocks
-  private ContractService contractService;
+  @InjectMocks private ContractService contractService;
 
-  @Mock
-  private ContractRepository contractRepository;
+  @Mock private ContractRepository contractRepository;
 
   @Mock private ClientRepository clientRepository;
 

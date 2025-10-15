@@ -1,8 +1,7 @@
 spring:
   data:
     mongodb:
-      auto-index-creation: true
-      uuid-representation: standard
+      uri: ${MONGODB_DATABASE_URL}
   docker:
     compose:
       lifecycle-management: start-only

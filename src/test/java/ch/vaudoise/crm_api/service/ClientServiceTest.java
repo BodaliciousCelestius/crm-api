@@ -30,11 +30,9 @@ import reactor.test.StepVerifier;
 @ExtendWith(MockitoExtension.class)
 class ClientServiceTest {
 
-  @InjectMocks
-  private ClientService clientService;
+  @InjectMocks private ClientService clientService;
 
-  @Mock
-  private ClientRepository clientRepository;
+  @Mock private ClientRepository clientRepository;
 
   @Mock private ContractRepository contractRepository;
 

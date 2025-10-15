@@ -28,6 +28,7 @@
         <commons-lang3.version>3.19.0</commons-lang3.version>
         <logback.version>1.5.19</logback.version>
         <jacoco.version>0.8.12</jacoco.version>
+        <testcontainers.version>1.19.1</testcontainers.version>
 
         <!-- Plugins -->
         <spotless-maven-plugin.version>2.46.1</spotless-maven-plugin.version>
@@ -95,6 +96,27 @@
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
             <version>${flapdoodle-embed-mongo.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mongodb</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
