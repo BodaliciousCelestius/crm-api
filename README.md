@@ -53,11 +53,11 @@ Reactive streams (Mono/Flux) provide backpressure and scalability for concurrent
 
 **Rationale:**
 
-* MongoDB fits naturally with JSON and evolving schemas.
+* MongoDB fits naturally with JSON and evolving schemas. Unique or relevant fields are indexed for better performance optimization. 
 * Layered design isolates business logic and promotes clean testing.
 * Make use of low code technique when possible (annotations from OpenAPI, Lombok, Spring Data, ...)
-* Testing is an obvious good practices that must be followed
-* 
+* Testing is an obvious good practices that must be followed. As such everything is tested.
+
 ---
 
 ## Prerequisites
@@ -66,8 +66,6 @@ Reactive streams (Mono/Flux) provide backpressure and scalability for concurrent
 * Docker Compose `2.40.0`
 
 Maven is not necessary since a mvn wrapper is provided (`mvnw`) to use it when needed.
-
-Don't forget to possibly alter the permission to be able to run it (`chmod +x mvnw`)
 
 ---
 
@@ -85,9 +83,6 @@ docker-compose up --build
 The prerequisite for working this way is to already have a mongodb running and have the `application-dev.yml` setup correctly.
 
 ```bash
-# Elevate mvnw privileges
-chmod +x mvnw
-
 # Build the application
 ./mvnw clean install
 
@@ -102,7 +97,7 @@ Swagger UI available at http://localhost:8080/swagger-ui/
 
 ```bash
 # Test the application
-mvn clean test
+./mvnw clean test
 ```
 
 ## Configuration
@@ -158,6 +153,13 @@ It splits into 3 main levels :
 The handling of log formatting is different based on the environment :
 * `dev`, `docker`, `default` : A simple String standardized formatting using the Spring default formatter
 * `prod` : A production ready formatting using JSON to be able to be ingested by cloud tooling.
+
+## Caching
+A lightweight caching mechanism is enabled at the service layers to cache clients and contracts whenever possible.
+It uses Caffeine along with Spring Boot caching definition (@Cacheable, @EvictCache)
+
+It's useful to prevent repetitive calls or potential refresh from a frontend.
+This is particularly relevant here to save some database calls from being made.
 
 ## Code Formatting
 
