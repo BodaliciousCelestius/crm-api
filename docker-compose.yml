@@ -1,17 +1,27 @@
 services:
-  mongodb:
-    image: mongo:8.0.13
-    environment:
-    - MONGO_INITDB_DATABASE=crm-api
-    command:
-    - --replSet
-    - rs0
-    - --bind_ip_all
+  mongo:
+    image: mongo:latest
+    container_name: crm-mongo
+    restart: unless-stopped
     ports:
-    - "27018:27017"
-    healthcheck:
-      test: test $$(mongosh --quiet --eval "try {rs.initiate({_id:'rs0',members:[{_id:0,host:\"mongodb:27017\"}]})}
-        catch(e) {rs.status().ok}") -eq 1
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: crm-api
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    container_name: crm-api
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:

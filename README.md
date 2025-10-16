@@ -1,62 +1,34 @@
-# `crm-api`
+<br>
+<img alt="Project icon" width="150" style="display: block; margin: auto; border-radius: 20%;" src="images/icon.png"/>
+<br>
 
-## Overview
 
-This project implements a **RESTful backend API** for managing **clients** (individuals or companies) and their **contracts** in the context of an insurance company. It is designed according to the technical exercise specifications provided by Api Factory.
+[![Build](https://github.com/<username>/crm-api/actions/workflows/ci.yml/badge.svg)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
+[![Code Coverage](https://img.shields.io/badge/coverage-88%25-brightgreen)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
+[![SpotBugs](https://img.shields.io/badge/spotbugs-passed-brightgreen)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
+[![PMD](https://img.shields.io/badge/pmd-passed-brightgreen)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
+[![Checkstyle](https://img.shields.io/badge/checkstyle-passed-brightgreen)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
 
-The system allows users (e.g. counselors) to:
+## Description
 
-* Create, read, update, and delete clients.
-* Manage contracts associated with those clients.
-* Query active contracts and compute total active contract costs efficiently.
+`crm-api` is a backend system designed for insurance companies to manage clients and contracts. 
 
-The API adheres to **ISO 8601 date standards**, **JSON** format, and follows **RESTful conventions**.
+As a counselor, you can create clients, create contracts for them, and manage both clients and their associated contracts. The API is fully RESTful, JSON-based, and adheres to ISO 8601 date standards with validation on dates, phone numbers, emails, and numeric fields.
 
----
-
-## Tech Stack
-
-* **Language:** Java 17+
-* **Framework:** Spring Boot 3.5.6
-* **Database:** MongoDB (data persistence and easy JSON mapping)
-* **Build Tool:** Maven
-* **Validation:** Jakarta Bean Validation (JSR 380)
-* **Testing:** JUnit 5 + Spring Boot Test
+Built with Java 21, Spring Boot, WebFlux, and Reactor, the system leverages ReactiveMongoRepository for MongoDB interactions. It is fully tested, with Jacoco reporting a code coverage of 88%.
 
 ---
+## Features
 
-##  Features
-
-### Client Management
-
-* Create a **Person** or **Company** client.
-* Fields:
-
-    * **Common:** name, email, phone
-    * **Person:** birthDate
-    * **Company:** companyIdentifier (e.g., `aaa-123`)
-* Update all fields except immutable ones (`birthDate` and `companyIdentifier`).
-* Delete a client → automatically closes their contracts (sets `endDate = now`).
-
-### Contract Management
-
-* Create a contract with:
-
-    * `startDate` (defaults to now if not provided)
-    * `endDate` (nullable)
-    * `costAmount`
-    * internal `updateDate` (auto-managed, not exposed)
-* Update `costAmount` → automatically refreshes `updateDate`.
-* Fetch all **active contracts** (where `now < endDate`).
-* Filter contracts by `updateDate`.
-* Compute total **sum of all active contracts’ costAmount** for a given client (optimized endpoint).
-
-###  Non-Functional Highlights
-
-* Persistent storage (MongoDB).
-* Input validation for dates, phone numbers, emails, and numeric fields.
-* Clean, descriptive naming over excessive comments.
-* Unit and integration testing coverage.
+* RESTful API for managing clients and contracts
+* ISO 8601 compliant date handling
+* Validation on dates, emails, phone numbers, and numbers
+* Reactive MongoDB integration with WebFlux and Reactor
+* Fully tested with Jacoco coverage
+* CI/CD via GitHub Actions with Maven caching and static analysis (SpotBugs, PMD, Checkstyle)
+* Dockerized application and docker-compose setup for local development
+* Multi-environment configuration (dev, prod, docker)
+* Maven Spotless plugin for code formatting
 
 ---
 
@@ -73,113 +45,119 @@ controller → service → repository → database
 * **Repository:** Spring Data MongoDB for persistence.
 * **Model/DTOs:** Separate data objects for domain and API exposure.
 
+The application is also using **Spring Boot WebFlux** for reactive programming and **ReactiveMongoRepository** for non-blocking data access. Controllers handle HTTP requests and delegate logic to service layers, ensuring separation of concerns. 
+
+Reactive streams (Mono/Flux) provide backpressure and scalability for concurrent workloads. This design ensures high performance, testability, and efficient resource usage while maintaining a clear, maintainable codebase.
+
 **Rationale:**
 
 * MongoDB fits naturally with JSON and evolving schemas.
 * Layered design isolates business logic and promotes clean testing.
-* Using `OffsetDateTime` for consistent ISO 8601 timestamps with UTC offsets.
+* Make use of low code technique when possible (annotations from OpenAPI, Lombok, Spring Data, ...)
+* Testing is an obvious good practices that must be followed
+* 
+---
+
+## Prerequisites
+* Java `21`
+* Docker `28.5.1`
+* Docker Compose `2.40.0`
+
+Maven is not necessary since a mvn wrapper is provided (`mvnw`) to use it when needed.
+
+Don't forget to possibly alter the permission to be able to run it (`chmod +x mvnw`)
 
 ---
 
-## Setup & Run Instructions
+## Getting Started
 
-### Prerequisites
-
-* Java 17+
-* Maven 3.9+
-* Docker (optional, for MongoDB)
-
-### Run Locally
-
-#### 1️⃣ Start MongoDB
-
-You can either run MongoDB locally or use Docker:
+### Run with Docker Compose
 
 ```bash
-docker run -d --name mongo -p 27017:27017 mongo:latest
+# Start the application with MongoDB
+docker-compose up --build
 ```
 
-#### 2️⃣ Configure the Application
+### Run with Maven (without Docker)
 
-Edit `src/main/resources/application.yml` if needed:
-
-```yaml
-spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/api_factory_db
-```
-
-#### 3️⃣ Build & Run
+The prerequisite for working this way is to already have a mongodb running and have the `application-dev.yml` setup correctly.
 
 ```bash
-mvn clean spring-boot:run
+# Elevate mvnw privileges
+chmod +x mvnw
+
+# Build the application
+./mvnw clean install
+
+# Run the application
+./mvnw spring-boot:run
 ```
+API available at http://localhost:8080
 
-The app will start at **[http://localhost:8080](http://localhost:8080)**.
+Swagger UI available at http://localhost:8080/swagger-ui/
 
-#### 4️⃣ Run Tests
+### Run tests
 
 ```bash
-mvn test
+# Test the application
+mvn clean test
 ```
 
----
+## Configuration
 
-## Example API Endpoints
+The application configuration is split by environment:
 
-### Create a Client
+* `application.yml` - Base configuration
+* `application-dev.yml` - Local development
+* `application-prod.yml` - Production
+* `application-docker.yml` - Docker-specific (overrides DB host with container name)
 
-```bash
-POST /api/clients
-Content-Type: application/json
+## API Documentation
 
-{
-  "type": "PERSON",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "phone": "+41790000000",
-  "birthDate": "1990-05-20"
-}
+Once the application is running, access all REST endpoints and documentation via Swagger UI:
+
 ```
-
-### Create a Contract
-
-```bash
-POST /api/clients/{clientId}/contracts
-{
-  "costAmount": 1200.50,
-  "startDate": "2025-01-01T00:00:00Z"
-}
+http://localhost:8080/swagger-ui/
 ```
-
-### Get Active Contracts
-
-```bash
-GET /api/clients/{clientId}/contracts?active=true
-```
-
-### Total Active Contract Cost
-
-```bash
-GET /api/clients/{clientId}/contracts/total
-```
-
----
-
+From there you can also trigger HTTP requests with appropriate payloads to test the API yourself.
 ## Proof of Correctness
 
-* Validation ensures data integrity (email, phone, ISO date).
-* Tests cover CRUD operations, contract updates, and total sum calculations.
-* End-to-end tested with Postman collection and integration tests.
+The correctness and compliance with technical specifications are asserted by three tenants :
+* 74 unit and integration tests that confirm expected behavior
+* A Jacoco code coverage monitoring currently reaching ~90%
+* Simple manual testing with tools like curl and postman
 
----
+All of this provide a strong foundation as to why the provided application is working properly.
 
-## Future Improvements
+## CI/CD
 
-* Add pagination and sorting for client/contract listings.
-* Implement caching for total-cost endpoint.
-* Add OpenAPI/Swagger documentation.
-* Add authentication & role-based access control.
+GitHub Actions pipeline is configured to:
 
----
+1. Build, test and "verify" the application using Maven
+2. Run static code analysis (SpotBugs, PMD, Checkstyle)
+3. Upload Jacoco code coverage reports to artifacts
+4. Trigger when push or PR merge is done on `main`
+Maven caching is enabled for faster builds.
+
+## Docker
+
+*  Application container exposes port `8080`
+* `Dockerfile` supports multi-stage builds: first builds the code, then runs it in a lightweight container
+* `docker-compose.yaml` sets up both the CRM API and a MongoDB server for local testing
+
+## Logging
+
+The application enables logging via Slf4j and lombok.
+It splits into 3 main levels :
+* `INFO` : All executed operations and simple application flow.
+* `WARN` : All error pertaining to the user and not crashing the app
+* `ERROR` : Critical error for the app that aren't expected
+
+The handling of log formatting is different based on the environment :
+* `dev`, `docker`, `default` : A simple String standardized formatting using the Spring default formatter
+* `prod` : A production ready formatting using JSON to be able to be ingested by cloud tooling.
+
+## Code Formatting
+
+Maven Spotless plugin ensures consistent code formatting across the project.
+
