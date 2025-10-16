@@ -46,7 +46,7 @@ public class SwaggerConfig {
   public OperationCustomizer operationCustomizer() {
     return (operation, handlerMethod) -> {
       var errorSchemaRef =
-          new io.swagger.v3.oas.models.media.Schema<>()
+          new Schema<>()
               .$ref("#/components/schemas/ApiErrorResponse");
 
       ApiResponse errorResponse =

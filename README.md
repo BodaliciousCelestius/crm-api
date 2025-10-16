@@ -1,5 +1,7 @@
 <br>
-<img alt="Project icon" width="150" style="display: block; margin: auto; border-radius: 20%;" src="images/icon.png"/>
+<p align="center">
+<img alt="Project icon" width="150" style="display: block; border-radius: 20%;" src="images/icon.png"/>
+</p>
 <br>
 
 
