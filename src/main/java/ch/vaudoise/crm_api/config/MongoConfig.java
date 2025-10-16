@@ -5,14 +5,14 @@ import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.auditing.DateTimeProvider;
-import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.config.EnableReactiveMongoAuditing;
 import org.springframework.data.mongodb.core.mapping.event.ValidatingEntityCallback;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
 @EnableReactiveMongoRepositories("ch.vaudoise.crm_api.repository")
-@EnableMongoAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
+@EnableReactiveMongoAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
 public class MongoConfig {
   @Bean(name = "auditingDateTimeProvider")
   public DateTimeProvider dateTimeProvider() {

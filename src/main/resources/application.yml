@@ -5,7 +5,12 @@ spring:
       uuid-representation: standard
   docker:
     compose:
-      lifecycle-management: start-only
+      enabled: false
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: true
 error:
   handling:
     http-status-in-json-response: true

@@ -1,18 +1,4 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27018/crm-api
-  docker:
-    compose:
-      lifecycle-management: start-only
-error:
-  handling:
-    http-status-in-json-response: true
-    exception-logging: NO_LOGGING
-    full-stacktrace-http-statuses: 5xx
-    log-levels:
-      5xx: ERROR
-springdoc:
-  swagger-ui:
-    path: /swagger-ui
-  pathsToMatch: /api/**
+      uri: mongodb://localhost:27017/crm-api

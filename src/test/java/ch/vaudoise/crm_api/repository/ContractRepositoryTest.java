@@ -13,7 +13,7 @@ import org.bson.types.Decimal128;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
@@ -21,11 +21,11 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.test.StepVerifier;
 
-@SpringBootTest
+@DataMongoTest
 @Testcontainers
 class ContractRepositoryTest {
 
-  @Container static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+  @Container final static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
 
   @DynamicPropertySource
   static void setProperties(DynamicPropertyRegistry registry) {
@@ -35,7 +35,6 @@ class ContractRepositoryTest {
   @Autowired private ContractRepository contractRepository;
 
   private Client client;
-  private List<Contract> contracts;
 
   @BeforeEach
   void setup() {
@@ -101,7 +100,8 @@ class ContractRepositoryTest {
             .updatedAt(Instant.now())
             .build();
 
-    contracts = List.of(contract1, contract2, contract3, contract4, contract5, contract6);
+    List<Contract> contracts =
+        List.of(contract1, contract2, contract3, contract4, contract5, contract6);
 
     contractRepository.saveAll(contracts).blockLast();
   }

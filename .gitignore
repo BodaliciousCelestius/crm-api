@@ -2,12 +2,8 @@
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
+
 .settings
-.springBeans
 .sts4-cache
 
 
@@ -185,17 +181,11 @@ build/
 .#*
 *#
 *~
-.classpath
-.project
-.settings
 bin
 build
 target
-dependency-reduced-pom.xml
 *.sublime-*
 /scratch
 .gradle
 README.html
-*.iml
-.idea
 .exercism

@@ -4,12 +4,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.Content;
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.MediaType;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +17,19 @@ public class SwaggerConfig {
   @Bean
   public OpenAPI openApiSpec() {
     return new OpenAPI()
+        .info(
+            new Info()
+                .title("CRM API")
+                .version("0.0.1-SNAPSHOT")
+                .description("API for managing clients and contracts stored in a backend database"))
         .components(
             new Components()
+                .addSchemas(
+                    "Decimal128",
+                    new NumberSchema()
+                        .format("double")
+                        .example(1234.56)
+                        .description("MongoDB Decimal128 value represented as a decimal number"))
                 .addSchemas(
                     "ApiErrorResponse",
                     new ObjectSchema()

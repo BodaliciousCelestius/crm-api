@@ -14,6 +14,7 @@ import ch.vaudoise.crm_api.repository.ContractRepository;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.time.Instant;
 import java.time.LocalDate;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Decimal128;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import reactor.core.publisher.Mono;
 @SuppressFBWarnings(
     value = {"EI_EXPOSE_REP2"},
     justification = "Ignore warning on Spring Boot Dependency Injection EI_EXPOSE_REP2")
+@Slf4j
 @Service
 public class ClientService {
 
@@ -35,6 +37,7 @@ public class ClientService {
   }
 
   public Mono<ResponseClientDTO> findById(String id) {
+    log.info("Fetching single client id={}", id);
     return clientRepository
         .findById(new ObjectId(id))
         .switchIfEmpty(Mono.error(new NotFoundException("Client not found: " + id)))
@@ -46,7 +49,11 @@ public class ClientService {
     Instant fromInstant = from == null ? null : from.atStartOfDay().toInstant(UTC);
     Instant toInstant =
         to == null ? null : to.plusDays(1).atStartOfDay(UTC).toInstant().minusSeconds(1);
-
+    log.info(
+        "Fetching all active contracts for client: id={}, from={}, to={}",
+        id,
+        fromInstant,
+        toInstant);
     return clientRepository
         .findById(objectId)
         .switchIfEmpty(Mono.error(new NotFoundException("Client not found: " + id)))
@@ -59,7 +66,11 @@ public class ClientService {
                 if (fromInstant.isAfter(toInstant)) {
                   return Flux.error(
                       new IllegalArgumentException(
-                          "Parameter 'from' and 'to' must be chronologically coherent (from < to)."));
+                          "Parameter 'from' and 'to' must be chronologically coherent ("
+                              + from
+                              + " < "
+                              + to
+                              + ")."));
                 }
                 contracts =
                     contractRepository.findByClientIdAndEndDateGreaterThanEqualAndUpdatedAtBetween(
@@ -84,6 +95,7 @@ public class ClientService {
   }
 
   public Mono<Decimal128> getAllActiveContractsTotalSum(String id) {
+    log.info("Computing total active contracts cost sum for client : {}", id);
     return clientRepository
         .findById(new ObjectId(id))
         .switchIfEmpty(Mono.error(new NotFoundException("Client not found: " + id)))
@@ -105,10 +117,31 @@ public class ClientService {
             .companyIdentifier(dto.companyIdentifier())
             .build();
 
-    return clientRepository.save(client).map(c -> c.getId().toString());
+    log.info(
+        "Creating new client: name={}, type={}, email={}, phone={}, birthday={}, cID={}",
+        dto.name(),
+        dto.type(),
+        dto.email(),
+        dto.phone(),
+        dto.birthday(),
+        dto.companyIdentifier());
+
+    return clientRepository
+        .save(client)
+        .map(c -> c.getId().toString())
+        .doOnSuccess(v -> log.info("Client successfully created: id={}", v))
+        .doOnError(e -> log.error("Error while creating client : {}", e.getMessage(), e));
   }
 
   public Mono<Void> update(String id, UpdateClientDTO dto) {
+    log.info(
+        "Updating client: id={}, name={}, phone={}, email={}, type={}",
+        id,
+        dto.name(),
+        dto.phone(),
+        dto.email(),
+        dto.type());
+
     return clientRepository
         .findById(new ObjectId(id))
         .switchIfEmpty(Mono.error(new NotFoundException("Client not found: " + id)))
@@ -119,17 +152,24 @@ public class ClientService {
               if (dto.type() != null) updateClient.type(dto.type());
               if (dto.email() != null) updateClient.email(dto.email());
               if (dto.phone() != null) updateClient.phone(dto.phone());
-              return clientRepository.save(updateClient.build());
+              return clientRepository
+                  .save(updateClient.build())
+                  .doOnSuccess(v -> log.info("Client successfully updated: id={}", id))
+                  .doOnError(
+                      e -> log.error("Error while updating client {}: {}", id, e.getMessage(), e));
             })
         .then();
   }
 
   public Mono<Void> delete(String id) {
+    log.info("Deleting client: id={}", id);
     return clientRepository
         .findById(new ObjectId(id))
         .switchIfEmpty(Mono.error(new NotFoundException("Client not found: " + id)))
         .flatMap(clientRepository::delete)
         .then(contractRepository.unsetClientIdByClientId(new ObjectId(id)))
-        .then(contractRepository.setEndDateByClientId(new ObjectId(id), LocalDate.now()));
+        .then(contractRepository.setEndDateByClientId(new ObjectId(id), LocalDate.now()))
+        .doOnSuccess(v -> log.info("Client successfully deleted: id={}", id))
+        .doOnError(e -> log.error("Error while deleted client {}: {}", id, e.getMessage(), e));
   }
 }

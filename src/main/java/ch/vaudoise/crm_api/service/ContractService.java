@@ -9,6 +9,7 @@ import ch.vaudoise.crm_api.repository.ContractRepository;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.time.Instant;
 import java.time.LocalDate;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 @SuppressFBWarnings(
     value = {"EI_EXPOSE_REP2"},
     justification = "Ignore warning on Spring Boot Dependency Injection EI_EXPOSE_REP2")
+@Slf4j
 @Service
 public class ContractService {
 
@@ -29,6 +31,12 @@ public class ContractService {
   }
 
   public Mono<String> create(final String clientId, final CreateContractDTO dto) {
+    log.info(
+        "Creating new contract for client {} : startDate={}, endDate={}, cost={}",
+        clientId,
+        dto.startDate(),
+        dto.endDate(),
+        dto.cost());
     return clientRepository
         .findById(new ObjectId(clientId))
         .switchIfEmpty(Mono.error(new NotFoundException("Client not found: " + clientId)))
@@ -44,10 +52,23 @@ public class ContractService {
                       .build();
               return contractRepository.save(contract);
             })
-        .map(contract -> contract.getId().toString());
+        .map(contract -> contract.getId().toString())
+        .doOnSuccess(
+            id -> log.info("Contract successfully created id={} for clientId={}", id, clientId))
+        .doOnError(
+            e ->
+                log.error(
+                    "Failed to create contract for clientId={}: {}", clientId, e.getMessage()));
   }
 
   public Mono<Void> update(final String id, final UpdateContractDTO dto) {
+    log.info(
+        "Updating contract id={} : startDate={}, endDate={}, cost={}",
+        id,
+        dto.startDate(),
+        dto.endDate(),
+        dto.cost());
+
     return contractRepository
         .findById(new ObjectId(id))
         .switchIfEmpty(Mono.error(new NotFoundException("Contract not found: " + id)))
@@ -60,13 +81,18 @@ public class ContractService {
               updateContract.updatedAt(Instant.now());
               return contractRepository.save(updateContract.build());
             })
+        .doOnSuccess(v -> log.info("Contract successfully updated: id={}", id))
+        .doOnError(e -> log.error("Error while updating contract {}: {}", id, e.getMessage()))
         .then();
   }
 
   public Mono<Void> delete(final String id) {
+    log.info("Deleting contract: id={}", id);
     return contractRepository
         .findById(new ObjectId(id))
         .switchIfEmpty(Mono.error(new NotFoundException("Contract not found: " + id)))
-        .flatMap(contractRepository::delete);
+        .flatMap(contractRepository::delete)
+        .doOnSuccess(v -> log.info("Contract successfully deleted: id={}", id))
+        .doOnError(e -> log.error("Error while deleting contract {}: {}", id, e.getMessage(), e));
   }
 }

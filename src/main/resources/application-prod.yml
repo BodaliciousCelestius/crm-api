@@ -2,17 +2,3 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_DATABASE_URL}
-  docker:
-    compose:
-      lifecycle-management: start-only
-error:
-  handling:
-    http-status-in-json-response: true
-    exception-logging: NO_LOGGING
-    full-stacktrace-http-statuses: 5xx
-    log-levels:
-      5xx: ERROR
-springdoc:
-  swagger-ui:
-    path: /swagger-ui
-  pathsToMatch: /api/**
