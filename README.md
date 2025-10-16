@@ -1,6 +1,6 @@
 <br>
 <p align="center">
-<img alt="Project icon" width="150" style="display: block; border-radius: 20%;" src="images/icon.png"/>
+<img alt="Project icon" width="250" style="display: block; border-radius: 20%;" src="images/icon.png"/>
 </p>
 <br>
 
