@@ -3,11 +3,11 @@
 <br>
 
 
-[![Build](https://github.com/<username>/crm-api/actions/workflows/ci.yml/badge.svg)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
-[![Code Coverage](https://img.shields.io/badge/coverage-88%25-brightgreen)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
-[![SpotBugs](https://img.shields.io/badge/spotbugs-passed-brightgreen)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
-[![PMD](https://img.shields.io/badge/pmd-passed-brightgreen)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
-[![Checkstyle](https://img.shields.io/badge/checkstyle-passed-brightgreen)](https://github.com/<username>/crm-api/actions/workflows/ci.yml)
+[![Build](https://github.com/BodaliciousCelestius/crm-api/actions/workflows/ci.yml/badge.svg)](https://github.com/BodaliciousCelestius/crm-api/actions/workflows/ci.yml)
+[![Code Coverage](https://img.shields.io/badge/coverage-88%25-brightgreen)](https://github.com/BodaliciousCelestius/crm-api/actions/workflows/ci.yml)
+[![SpotBugs](https://img.shields.io/badge/spotbugs-passed-brightgreen)](https://github.com/BodaliciousCelestius/crm-api/actions/workflows/ci.yml)
+[![PMD](https://img.shields.io/badge/pmd-passed-brightgreen)](https://github.com/BodaliciousCelestius/crm-api/actions/workflows/ci.yml)
+[![Checkstyle](https://img.shields.io/badge/checkstyle-passed-brightgreen)](https://github.com/BodaliciousCelestius/crm-api/actions/workflows/ci.yml)
 
 ## Description
 
