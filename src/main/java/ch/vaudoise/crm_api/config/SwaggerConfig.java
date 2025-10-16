@@ -45,9 +45,7 @@ public class SwaggerConfig {
   @Bean
   public OperationCustomizer operationCustomizer() {
     return (operation, handlerMethod) -> {
-      var errorSchemaRef =
-          new Schema<>()
-              .$ref("#/components/schemas/ApiErrorResponse");
+      var errorSchemaRef = new Schema<>().$ref("#/components/schemas/ApiErrorResponse");
 
       ApiResponse errorResponse =
           new ApiResponse()

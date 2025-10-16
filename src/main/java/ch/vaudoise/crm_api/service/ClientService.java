@@ -38,7 +38,7 @@ public class ClientService {
     this.contractRepository = contractRepository;
   }
 
-  @Cacheable(value="clients", key = "#id")
+  @Cacheable(value = "clients", key = "#id")
   public Mono<ResponseClientDTO> findById(String id) {
     log.info("Fetching single client id={}", id);
     return clientRepository
@@ -48,9 +48,9 @@ public class ClientService {
   }
 
   @Cacheable(
-          value = "contracts",
-          key = "#id + '_' + (#from != null ? #from.toString() : 'null') + '_' + (#to != null ? #to.toString() : 'null')"
-  )
+      value = "contracts",
+      key =
+          "#id + '_' + (#from != null ? #from.toString() : 'null') + '_' + (#to != null ? #to.toString() : 'null')")
   public Flux<ResponseContractDTO> getAllActiveContracts(String id, LocalDate from, LocalDate to) {
     ObjectId objectId = new ObjectId(id);
     Instant fromInstant = from == null ? null : from.atStartOfDay().toInstant(UTC);
@@ -101,7 +101,7 @@ public class ClientService {
             });
   }
 
-  @Cacheable(value = "active_contract_sum", key="#id")
+  @Cacheable(value = "active_contract_sum", key = "#id")
   public Mono<Decimal128> getAllActiveContractsTotalSum(String id) {
     log.info("Computing total active contracts cost sum for client : {}", id);
     return clientRepository
@@ -141,8 +141,8 @@ public class ClientService {
         .doOnError(e -> log.error("Error while creating client : {}", e.getMessage(), e));
   }
 
-    @CacheEvict(value = "clients", key = "#id")
-    public Mono<Void> update(String id, UpdateClientDTO dto) {
+  @CacheEvict(value = "clients", key = "#id")
+  public Mono<Void> update(String id, UpdateClientDTO dto) {
     log.info(
         "Updating client: id={}, name={}, phone={}, email={}, type={}",
         id,

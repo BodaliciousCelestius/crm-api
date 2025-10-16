@@ -31,7 +31,7 @@ public class ContractService {
     this.contractRepository = contractRepository;
   }
 
-    @CacheEvict(value = "contracts", allEntries = true)
+  @CacheEvict(value = "contracts", allEntries = true)
   public Mono<String> create(final String clientId, final CreateContractDTO dto) {
     log.info(
         "Creating new contract for client {} : startDate={}, endDate={}, cost={}",
@@ -63,7 +63,7 @@ public class ContractService {
                     "Failed to create contract for clientId={}: {}", clientId, e.getMessage()));
   }
 
-    @CacheEvict(value = "contracts", allEntries = true)
+  @CacheEvict(value = "contracts", allEntries = true)
   public Mono<Void> update(final String id, final UpdateContractDTO dto) {
     log.info(
         "Updating contract id={} : startDate={}, endDate={}, cost={}",
@@ -88,7 +88,6 @@ public class ContractService {
         .doOnError(e -> log.error("Error while updating contract {}: {}", id, e.getMessage()))
         .then();
   }
-
 
   public Mono<Void> delete(final String id) {
     log.info("Deleting contract: id={}", id);

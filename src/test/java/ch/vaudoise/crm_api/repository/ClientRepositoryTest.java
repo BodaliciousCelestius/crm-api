@@ -20,7 +20,7 @@ import reactor.test.StepVerifier;
 @Testcontainers
 class ClientRepositoryTest {
 
-  @Container final static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+  @Container static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
 
   @DynamicPropertySource
   static void setProperties(DynamicPropertyRegistry registry) {

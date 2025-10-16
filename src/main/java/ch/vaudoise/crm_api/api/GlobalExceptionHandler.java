@@ -157,8 +157,7 @@ public class GlobalExceptionHandler {
           default -> targetType.getSimpleName();
         };
 
-      return String.format(
-          "Field '%s' has invalid value '%s' — expected format '%s'.",
-          field, value, expectedFormat);
+    return String.format(
+        "Field '%s' has invalid value '%s' — expected format '%s'.", field, value, expectedFormat);
   }
 }
