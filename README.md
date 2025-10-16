@@ -87,7 +87,7 @@ The prerequisite for working this way is to already have a mongodb running and h
 ./mvnw clean install
 
 # Run the application
-./mvnw spring-boot:run
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 API available at http://localhost:8080
 
